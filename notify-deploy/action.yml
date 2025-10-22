@@ -187,10 +187,13 @@ runs:
 
         # Build actions based on status
         if [ "$STATUS" == "success" ]; then
-          ACTIONS="\"actions\":{\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📊 Dashboard\"},\"url\":\"${DASHBOARD_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"⚡ Lambda\"},\"url\":\"${LAMBDA_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📋 Logs\"},\"url\":\"${LOGS_URL}\"}]}"
+          ACTIONS="\"type\":\"actions\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📊 Dashboard\"},\"url\":\"${DASHBOARD_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"⚡ Lambda\"},\"url\":\"${LAMBDA_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📋 Logs\"},\"url\":\"${LOGS_URL}\"}]"
         else
-          ACTIONS="\"actions\":{\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"🔍 Ver Logs\"},\"url\":\"${LOGS_URL}\",\"style\":\"danger\"}]}"
+          ACTIONS="\"type\":\"actions\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"🔍 Ver Logs\"},\"url\":\"${LOGS_URL}\",\"style\":\"danger\"}]"
         fi
+        # Get commit short SHA
+        COMMIT_SHA="${{ github.sha }}"
+        COMMIT_SHORT="${COMMIT_SHA:0:7}"
 
         curl -X POST "$SLACK_WEBHOOK" \
           -H 'Content-Type: application/json' \
@@ -201,7 +204,7 @@ runs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${{ github.ref_name }}\\\`\\n*Actor:* ${{ github.actor }}\\n*Commit:* <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>\"
+                  \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${{ github.ref_name }}\\\`\\n*Actor:* ${{ github.actor }}\\n*Commit:* <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${COMMIT_SHORT}>\"
                 }
               },
               {
@@ -264,7 +267,8 @@ runs:
         # URLs and GitHub info
         DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
         COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
-        COMMIT_SHORT="${GITHUB_SHA:0:7}"
+        COMMIT_SHA="${{ github.sha }}"
+        COMMIT_SHORT="${COMMIT_SHA:0:7}"
         LOGS_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         GITHUB_REF_NAME="${{ github.ref_name }}"
         GITHUB_ACTOR="${{ github.actor }}"
