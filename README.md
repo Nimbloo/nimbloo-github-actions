@@ -8,9 +8,18 @@ Coleção de GitHub Actions reutilizáveis para automação de deploy e notifica
 
 Envia notificações automáticas de deploy via Slack e Email (AWS SES).
 
-**Instalação:**
+**Instalação (repositório privado):**
 ```yaml
-- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+- name: Checkout nimbloo-github-actions
+  uses: actions/checkout@v4
+  with:
+    repository: Nimbloo/nimbloo-github-actions
+    ref: v1
+    path: .github/actions-temp
+    token: ${{ secrets.GITHUB_TOKEN }}
+
+- name: Notify Deploy
+  uses: ./.github/actions-temp/notify-deploy
   if: always()
 ```
 
@@ -35,8 +44,18 @@ Envia notificações automáticas de deploy via Slack e Email (AWS SES).
          - name: Deploy
            run: ./deploy.sh
 
-         # ✅ Uma única linha
-         - uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+         # ✅ Checkout da action (repositório privado)
+         - name: Checkout nimbloo-github-actions
+           uses: actions/checkout@v4
+           with:
+             repository: Nimbloo/nimbloo-github-actions
+             ref: v1
+             path: .github/actions-temp
+             token: ${{ secrets.GITHUB_TOKEN }}
+
+         # ✅ Enviar notificações
+         - name: Notify Deploy
+           uses: ./.github/actions-temp/notify-deploy
            if: always()
    ```
 
@@ -70,13 +89,18 @@ Este repositório usa **tags semânticas** para versionamento:
 
 - `v1` → Última versão major 1 (recomendado)
 - `v1.0.0` → Versão específica
-- `main` → Desenvolvimento (não recomendado para produção)
+- `master` → Desenvolvimento (não recomendado para produção)
 
 **Uso recomendado:**
 ```yaml
-uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1  # ✅ Recomendado
-uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1.0.0  # ✅ OK (versão fixa)
-uses: Nimbloo/nimbloo-github-actions/notify-deploy@main  # ⚠️ Não recomendado
+# ✅ Recomendado - usa tag v1
+ref: v1
+
+# ✅ OK - versão fixa
+ref: v1.0.0
+
+# ⚠️ Não recomendado - desenvolvimento
+ref: master
 ```
 
 ---
@@ -98,8 +122,18 @@ No seu repositório, vá em **Settings → Secrets and Variables → Actions →
 Edite `.github/workflows/deploy.yml` e adicione:
 
 ```yaml
+# 1. Fazer checkout da action (necessário para repositórios privados)
+- name: Checkout nimbloo-github-actions
+  uses: actions/checkout@v4
+  with:
+    repository: Nimbloo/nimbloo-github-actions
+    ref: v1
+    path: .github/actions-temp
+    token: ${{ secrets.GITHUB_TOKEN }}
+
+# 2. Usar a action local
 - name: Notify Deploy
-  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+  uses: ./.github/actions-temp/notify-deploy
   if: always()
 ```
 
@@ -127,13 +161,33 @@ Na próxima vez que fizer deploy, você receberá notificações automáticas! �
 
 **Erro:**
 ```
-Error: Unable to resolve action `Nimbloo/nimbloo-github-actions/notify-deploy@v1`
+Error: Unable to resolve action `Nimbloo/nimbloo-github-actions`
 ```
 
 **Solução:**
-1. Verifique se o repositório `Nimbloo/nimbloo-github-actions` é público ou se seu workflow tem acesso
-2. Verifique se a tag `v1` existe
-3. Tente usar `@master` temporariamente para debug
+Este erro ocorre quando se tenta usar a sintaxe direta (`uses: Nimbloo/...`) com repositórios privados.
+
+**Use a abordagem com checkout explícito:**
+```yaml
+- name: Checkout nimbloo-github-actions
+  uses: actions/checkout@v4
+  with:
+    repository: Nimbloo/nimbloo-github-actions
+    ref: v1
+    path: .github/actions-temp
+    token: ${{ secrets.GITHUB_TOKEN }}
+
+- name: Notify Deploy
+  uses: ./.github/actions-temp/notify-deploy
+  if: always()
+```
+
+### Permissões de acesso
+
+Certifique-se que a organização permite o uso de actions privadas:
+1. **Organization Settings** → **Actions** → **General**
+2. Selecione: **"Allow Nimbloo, and select non-Nimbloo, actions and reusable workflows"**
+3. Adicione as actions públicas permitidas (actions/*, aws-actions/*, codecov/*)
 
 ---
 

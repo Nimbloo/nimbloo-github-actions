@@ -17,7 +17,7 @@ GitHub Action para enviar notificações automáticas de deploy via **Slack** e 
 
 ## 📦 Uso Básico
 
-### Exemplo Mínimo (apenas 1 linha!)
+### Exemplo Mínimo (repositório privado)
 
 ```yaml
 jobs:
@@ -30,9 +30,18 @@ jobs:
       - name: Deploy
         run: ./deploy.sh
 
-      # ✅ Adicione apenas este step
+      # ✅ Checkout da action (repositório privado)
+      - name: Checkout nimbloo-github-actions
+        uses: actions/checkout@v4
+        with:
+          repository: Nimbloo/nimbloo-github-actions
+          ref: v1
+          path: .github/actions-temp
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ✅ Enviar notificações
       - name: Notify
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         if: always()
 ```
 
@@ -108,8 +117,16 @@ jobs:
       - name: Deploy to AWS
         run: sam deploy --stack-name my-app-${{ env.STAGE }}
 
+      - name: Checkout nimbloo-github-actions
+        uses: actions/checkout@v4
+        with:
+          repository: Nimbloo/nimbloo-github-actions
+          ref: v1
+          path: .github/actions-temp
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Notify
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         if: always()
 ```
 
@@ -118,9 +135,17 @@ jobs:
 ### Exemplo 2: Customizando Parâmetros
 
 ```yaml
+- name: Checkout nimbloo-github-actions
+  uses: actions/checkout@v4
+  with:
+    repository: Nimbloo/nimbloo-github-actions
+    ref: v1
+    path: .github/actions-temp
+    token: ${{ secrets.GITHUB_TOKEN }}
+
 - name: Notify Deploy Success
   if: success()
-  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+  uses: ./.github/actions-temp/notify-deploy
   with:
     project_name: "DCR API"
     stage: "prd"
@@ -141,8 +166,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout nimbloo-github-actions
+        uses: actions/checkout@v4
+        with:
+          repository: Nimbloo/nimbloo-github-actions
+          ref: v1
+          path: .github/actions-temp
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Notify - Deploy Started
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         with:
           status: "started"
 
@@ -151,13 +184,13 @@ jobs:
 
       - name: Notify - Deploy Success
         if: success()
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         with:
           status: "success"
 
       - name: Notify - Deploy Failed
         if: failure()
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         with:
           status: "failed"
 ```
@@ -179,8 +212,16 @@ jobs:
       - name: Deploy to ${{ matrix.stage }}
         run: sam deploy --stack-name my-app-${{ matrix.stage }}
 
+      - name: Checkout nimbloo-github-actions
+        uses: actions/checkout@v4
+        with:
+          repository: Nimbloo/nimbloo-github-actions
+          ref: v1
+          path: .github/actions-temp
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Notify
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: ./.github/actions-temp/notify-deploy
         if: always()
         with:
           stage: ${{ matrix.stage }}
@@ -191,8 +232,16 @@ jobs:
 ### Exemplo 5: Com Mensagem Customizada
 
 ```yaml
+- name: Checkout nimbloo-github-actions
+  uses: actions/checkout@v4
+  with:
+    repository: Nimbloo/nimbloo-github-actions
+    ref: v1
+    path: .github/actions-temp
+    token: ${{ secrets.GITHUB_TOKEN }}
+
 - name: Notify with Custom Message
-  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+  uses: ./.github/actions-temp/notify-deploy
   with:
     custom_message: "🎉 Nova feature: Upload de imagens agora 50% mais rápido!"
 ```
