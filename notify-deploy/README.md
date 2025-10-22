@@ -32,7 +32,7 @@ jobs:
 
       # ✅ Adicione apenas este step
       - name: Notify
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         if: always()
 ```
 
@@ -109,7 +109,7 @@ jobs:
         run: sam deploy --stack-name my-app-${{ env.STAGE }}
 
       - name: Notify
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         if: always()
 ```
 
@@ -120,7 +120,7 @@ jobs:
 ```yaml
 - name: Notify Deploy Success
   if: success()
-  uses: Nimbloo/github-actions/notify-deploy@v1
+  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
     project_name: "DCR API"
     stage: "prd"
@@ -142,7 +142,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Notify - Deploy Started
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         with:
           status: "started"
 
@@ -151,13 +151,13 @@ jobs:
 
       - name: Notify - Deploy Success
         if: success()
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         with:
           status: "success"
 
       - name: Notify - Deploy Failed
         if: failure()
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         with:
           status: "failed"
 ```
@@ -180,7 +180,7 @@ jobs:
         run: sam deploy --stack-name my-app-${{ matrix.stage }}
 
       - name: Notify
-        uses: Nimbloo/github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
         if: always()
         with:
           stage: ${{ matrix.stage }}
@@ -192,7 +192,7 @@ jobs:
 
 ```yaml
 - name: Notify with Custom Message
-  uses: Nimbloo/github-actions/notify-deploy@v1
+  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
     custom_message: "🎉 Nova feature: Upload de imagens agora 50% mais rápido!"
 ```
@@ -381,4 +381,4 @@ MIT License - Nimbloo © 2025
 
 ## 💡 Suporte
 
-Problemas ou dúvidas? [Abra uma issue](https://github.com/Nimbloo/github-actions/issues)
+Problemas ou dúvidas? [Abra uma issue](https://github.com/Nimbloo/nimbloo-github-actions/issues)

@@ -10,7 +10,7 @@ Envia notificações automáticas de deploy via Slack e Email (AWS SES).
 
 **Instalação:**
 ```yaml
-- uses: Nimbloo/github-actions/notify-deploy@v1
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   if: always()
 ```
 
@@ -36,7 +36,7 @@ Envia notificações automáticas de deploy via Slack e Email (AWS SES).
            run: ./deploy.sh
 
          # ✅ Uma única linha
-         - uses: Nimbloo/github-actions/notify-deploy@v1
+         - uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
            if: always()
    ```
 
@@ -57,7 +57,7 @@ Cada action possui sua própria documentação detalhada:
 ### Estrutura do Repositório
 
 ```
-github-actions/
+nimbloo-github-actions/
 ├── README.md                    # Este arquivo
 └── notify-deploy/               # Action de notificações
     ├── action.yml               # Definição da action
@@ -74,9 +74,9 @@ Este repositório usa **tags semânticas** para versionamento:
 
 **Uso recomendado:**
 ```yaml
-uses: Nimbloo/github-actions/notify-deploy@v1  # ✅ Recomendado
-uses: Nimbloo/github-actions/notify-deploy@v1.0.0  # ✅ OK (versão fixa)
-uses: Nimbloo/github-actions/notify-deploy@main  # ⚠️ Não recomendado
+uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1  # ✅ Recomendado
+uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1.0.0  # ✅ OK (versão fixa)
+uses: Nimbloo/nimbloo-github-actions/notify-deploy@main  # ⚠️ Não recomendado
 ```
 
 ---
@@ -99,7 +99,7 @@ Edite `.github/workflows/deploy.yml` e adicione:
 
 ```yaml
 - name: Notify Deploy
-  uses: Nimbloo/github-actions/notify-deploy@v1
+  uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   if: always()
 ```
 
@@ -127,13 +127,13 @@ Na próxima vez que fizer deploy, você receberá notificações automáticas! �
 
 **Erro:**
 ```
-Error: Unable to resolve action `Nimbloo/github-actions/notify-deploy@v1`
+Error: Unable to resolve action `Nimbloo/nimbloo-github-actions/notify-deploy@v1`
 ```
 
 **Solução:**
-1. Verifique se o repositório `Nimbloo/github-actions` é público ou se seu workflow tem acesso
+1. Verifique se o repositório `Nimbloo/nimbloo-github-actions` é público ou se seu workflow tem acesso
 2. Verifique se a tag `v1` existe
-3. Tente usar `@main` temporariamente para debug
+3. Tente usar `@master` temporariamente para debug
 
 ---
 
@@ -161,5 +161,5 @@ MIT License - Nimbloo © 2025
 ## 💬 Suporte
 
 - 📖 [Documentação](./notify-deploy/README.md)
-- 🐛 [Reportar Bug](https://github.com/Nimbloo/github-actions/issues)
-- 💡 [Solicitar Feature](https://github.com/Nimbloo/github-actions/issues)
+- 🐛 [Reportar Bug](https://github.com/Nimbloo/nimbloo-github-actions/issues)
+- 💡 [Solicitar Feature](https://github.com/Nimbloo/nimbloo-github-actions/issues)
