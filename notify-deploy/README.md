@@ -17,39 +17,30 @@ GitHub Action para enviar notificações automáticas de deploy via **Slack** e 
 
 ## 📦 Uso Básico
 
-### Exemplo Mínimo (repositório privado)
+### Adicione 2 steps após seu deploy:
 
 ```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      # Seu deploy aqui
       - name: Deploy
         run: ./deploy.sh
 
-      # ✅ Checkout da action (repositório privado)
-      - name: Checkout nimbloo-github-actions
-        uses: actions/checkout@v4
+      # ✅ Step 1: Baixar action
+      - uses: actions/checkout@v4
         with:
           repository: Nimbloo/nimbloo-github-actions
           ref: v1
           path: .github/actions-temp
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ✅ Enviar notificações
-      - name: Notify
-        uses: ./.github/actions-temp/notify-deploy
+      # ✅ Step 2: Notificar
+      - uses: ./.github/actions-temp/notify-deploy
         if: always()
 ```
 
-Isso é tudo! A action vai **auto-detectar** tudo:
-- Nome do projeto
-- Ambiente (dev/hml/prd)
-- Versão (pom.xml ou package.json)
-- Status (success/failed)
+**Pronto!** Auto-detecta:
+- ✅ Projeto (nome do repositório)
+- ✅ Ambiente (dev/hml/prd da branch)
+- ✅ Versão (pom.xml ou package.json)
+- ✅ Status (success/failed)
 
 ---
 

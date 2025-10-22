@@ -8,18 +8,17 @@ Coleção de GitHub Actions reutilizáveis para automação de deploy e notifica
 
 Envia notificações automáticas de deploy via Slack e Email (AWS SES).
 
-**Instalação (repositório privado):**
+**Instalação - 2 steps simples:**
 ```yaml
-- name: Checkout nimbloo-github-actions
-  uses: actions/checkout@v4
+# Step 1: Baixar a action
+- uses: actions/checkout@v4
   with:
     repository: Nimbloo/nimbloo-github-actions
     ref: v1
     path: .github/actions-temp
-    token: ${{ secrets.GITHUB_TOKEN }}
 
-- name: Notify Deploy
-  uses: ./.github/actions-temp/notify-deploy
+# Step 2: Usar
+- uses: ./.github/actions-temp/notify-deploy
   if: always()
 ```
 
@@ -29,37 +28,32 @@ Envia notificações automáticas de deploy via Slack e Email (AWS SES).
 
 ## 🚀 Quick Start
 
-1. **Configure as variáveis no seu repositório:**
-   - `SLACK_WEBHOOK_URL` (opcional)
-   - `NOTIFICATION_EMAIL` (opcional)
-   - `NOTIFICATION_EMAIL_FROM` (opcional)
+### Passo 1: Configurar variáveis (opcional)
+Se quiser notificações Slack/Email, configure em **Settings → Secrets and Variables → Actions → Variables**:
+- `SLACK_WEBHOOK_URL`
+- `NOTIFICATION_EMAIL`
+- `NOTIFICATION_EMAIL_FROM`
 
-2. **Adicione ao seu workflow:**
-   ```yaml
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v4
-         - name: Deploy
-           run: ./deploy.sh
+### Passo 2: Adicionar 2 steps no final do seu workflow
 
-         # ✅ Checkout da action (repositório privado)
-         - name: Checkout nimbloo-github-actions
-           uses: actions/checkout@v4
-           with:
-             repository: Nimbloo/nimbloo-github-actions
-             ref: v1
-             path: .github/actions-temp
-             token: ${{ secrets.GITHUB_TOKEN }}
+```yaml
+      # Seu deploy aqui...
+      - name: Deploy
+        run: ./deploy.sh
 
-         # ✅ Enviar notificações
-         - name: Notify Deploy
-           uses: ./.github/actions-temp/notify-deploy
-           if: always()
-   ```
+      # ✅ Step 1: Baixar a action
+      - uses: actions/checkout@v4
+        with:
+          repository: Nimbloo/nimbloo-github-actions
+          ref: v1
+          path: .github/actions-temp
 
-3. **Pronto!** Notificações automáticas de deploy 🎉
+      # ✅ Step 2: Enviar notificações
+      - uses: ./.github/actions-temp/notify-deploy
+        if: always()
+```
+
+**Pronto!** Auto-detecta ambiente, versão e status. Envia notificações Slack/Email automaticamente. 🎉
 
 ---
 
@@ -107,39 +101,30 @@ ref: master
 
 ## 🤝 Como Usar em Seus Projetos
 
-### Passo 1: Configurar Variáveis
+### 1. Configurar variáveis (opcional)
+**Settings → Secrets and Variables → Actions → Variables:**
+- `SLACK_WEBHOOK_URL` → URL do webhook Slack
+- `NOTIFICATION_EMAIL` → Email para receber notificações
+- `NOTIFICATION_EMAIL_FROM` → Email remetente (verificado no SES)
 
-No seu repositório, vá em **Settings → Secrets and Variables → Actions → Variables** e adicione:
+### 2. Adicionar no workflow
 
-| Variável | Descrição |
-|----------|-----------|
-| `SLACK_WEBHOOK_URL` | URL do webhook Slack |
-| `NOTIFICATION_EMAIL` | Email para receber notificações |
-| `NOTIFICATION_EMAIL_FROM` | Email remetente (verificado no SES) |
-
-### Passo 2: Adicionar ao Workflow
-
-Edite `.github/workflows/deploy.yml` e adicione:
+Abra `.github/workflows/deploy.yml` e adicione **no final**, após seu deploy:
 
 ```yaml
-# 1. Fazer checkout da action (necessário para repositórios privados)
-- name: Checkout nimbloo-github-actions
-  uses: actions/checkout@v4
+# Step 1: Baixar action
+- uses: actions/checkout@v4
   with:
     repository: Nimbloo/nimbloo-github-actions
     ref: v1
     path: .github/actions-temp
-    token: ${{ secrets.GITHUB_TOKEN }}
 
-# 2. Usar a action local
-- name: Notify Deploy
-  uses: ./.github/actions-temp/notify-deploy
+# Step 2: Notificar
+- uses: ./.github/actions-temp/notify-deploy
   if: always()
 ```
 
-### Passo 3: Push e Deploy!
-
-Na próxima vez que fizer deploy, você receberá notificações automáticas! 🚀
+**Pronto!** No próximo deploy, receberá notificações automaticamente 🚀
 
 ---
 
