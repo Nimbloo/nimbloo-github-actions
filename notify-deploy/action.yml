@@ -122,21 +122,12 @@ runs:
 
         # Webhook/Email configs
         SLACK_WEBHOOK="${{ inputs.slack_webhook_url }}"
-        if [ -z "$SLACK_WEBHOOK" ]; then
-          SLACK_WEBHOOK="${{ vars.SLACK_WEBHOOK_URL || '' }}"
-        fi
         echo "SLACK_WEBHOOK=${SLACK_WEBHOOK}" >> "$GITHUB_ENV"
 
         NOTIFICATION_EMAIL="${{ inputs.notification_email }}"
-        if [ -z "$NOTIFICATION_EMAIL" ]; then
-          NOTIFICATION_EMAIL="${{ vars.NOTIFICATION_EMAIL || '' }}"
-        fi
         echo "NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}" >> "$GITHUB_ENV"
 
         NOTIFICATION_EMAIL_FROM="${{ inputs.notification_email_from }}"
-        if [ -z "$NOTIFICATION_EMAIL_FROM" ]; then
-          NOTIFICATION_EMAIL_FROM="${{ vars.NOTIFICATION_EMAIL_FROM || vars.NOTIFICATION_EMAIL || '' }}"
-        fi
         echo "NOTIFICATION_EMAIL_FROM=${NOTIFICATION_EMAIL_FROM}" >> "$GITHUB_ENV"
 
         # Custom message
