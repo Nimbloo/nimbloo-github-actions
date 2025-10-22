@@ -8,6 +8,12 @@ set +e  # Don't fail if notification fails
 
 COMMIT_SHORT="${GITHUB_SHA:0:7}"
 
+# Nimbloo brand colors
+NIMBLOO_PURPLE="#642878"
+NIMBLOO_DEEP_PURPLE="#502364"
+NIMBLOO_ORANGE="#F05A28"
+
+
 #==============================================
 # SLACK NOTIFICATION
 #==============================================
@@ -47,7 +53,10 @@ if [ -n "$SLACK_WEBHOOK" ]; then
   # URLs
   DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
   LAMBDA_URL="https://console.aws.amazon.com/lambda/home?region=${AWS_REGION}#/functions/${STACK_NAME}"
-  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"  
+  # Mr. Shipper image (hosted on GitHub)
+  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/mr.shipper.png"
+
 
   # Build actions based on status
   if [ "$STATUS" == "success" ]; then
@@ -118,18 +127,21 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
       ;;
   esac
 
-  # Determine color
+  # Determine badge color based on stage
   case "${STAGE}" in
-    "dev") ENV_COLOR="#3b82f6" ;;
-    "hml") ENV_COLOR="#f59e0b" ;;
-    "prd") ENV_COLOR="#10b981" ;;
-    *) ENV_COLOR="#6b7280" ;;
+    "dev") BADGE_COLOR="$NIMBLOO_PURPLE" ;;
+    "hml") BADGE_COLOR="$NIMBLOO_ORANGE" ;;
+    "prd") BADGE_COLOR="$NIMBLOO_DEEP_PURPLE" ;;
+    *) BADGE_COLOR="#6b7280" ;;
   esac
 
   # URLs
   DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
   COMMIT_URL="https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
-  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"  
+  # Mr. Shipper image (hosted on GitHub)
+  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/mr.shipper.png"
+
 
   # Build HTML email
   if [ "$STATUS" == "success" ]; then
@@ -144,21 +156,26 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(100, 40, 120, 0.15); overflow: hidden;">
+          <!-- Header with gradient -->
+          <tr>
+            <td style="background: linear-gradient(135deg, NIMBLOO_PURPLE_PLACEHOLDER 0%, NIMBLOO_DEEP_PURPLE_PLACEHOLDER 100%); padding: 30px 40px; text-align: center;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
+                EMOJI_PLACEHOLDER Deploy Concluído!
+              </h1>
+              <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
+                Mr. Shipper fez o ship com sucesso!
+              </p>
+            </td>
+          </tr>
           <tr>
             <td style="padding: 40px;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="padding-bottom: 30px;">
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827;">
-                      EMOJI_PLACEHOLDER Deploy Concluído com Sucesso
-                    </h1>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom: 20px;">
-                    <div style="background-color: ENV_COLOR_PLACEHOLDER; padding: 3px 12px; border-radius: 4px; display: inline-block;">
-                      <span style="color: #ffffff; font-weight: 600; font-size: 12px; text-transform: uppercase;">STAGE_PLACEHOLDER</span>
+                  <td style="padding-bottom: 25px;" align="center">
+                    <div style="background-color: BADGE_COLOR_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
+                      <span style="color: #ffffff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">STAGE_PLACEHOLDER</span>
                     </div>
                   </td>
                 </tr>
@@ -166,48 +183,48 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                   <td style="padding-bottom: 30px;">
                     <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151; width: 140px;">Project</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Version</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151;">Stack</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Stack</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STACK_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Region</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Region</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">AWS_REGION_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151;">Branch</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Deployed by</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Deployed by</td>
                         <td style="color: #6b7280;">GITHUB_ACTOR_PLACEHOLDER</td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151;">Commit</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Commit</td>
                         <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
                       </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding-top: 20px;">
+                  <td style="padding-top: 10px;" align="center">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right: 10px;">
-                          <a href="DASHBOARD_URL_PLACEHOLDER" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
-                            📊 Ver Dashboard
+                        <td style="padding: 0 8px;">
+                          <a href="DASHBOARD_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                            📊 Dashboard
                           </a>
                         </td>
-                        <td>
-                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: #6b7280; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
-                            📋 Ver Logs
+                        <td style="padding: 0 8px;">
+                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                            📋 Logs
                           </a>
                         </td>
                       </tr>
@@ -218,8 +235,13 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
             </td>
           </tr>
           <tr>
-            <td style="padding: 20px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
-              Nimbloo Platform · Deploy Automation
+            <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 2px solid #e5e7eb;">
+              <p style="margin: 0; color: #6b7280; font-size: 12px;">
+                <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
+              </p>
+              <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
+                Shipped with ❤️ by Mr. Shipper
+              </p>
             </td>
           </tr>
         </table>
@@ -242,17 +264,22 @@ HTMLEOF
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-left: 4px solid #ef4444;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15); overflow: hidden;">
+          <!-- Header with gradient -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 30px 40px; text-align: center;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px; filter: grayscale(30%);">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
+                ❌ Deploy Falhou
+              </h1>
+              <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
+                Algo deu errado no ship...
+              </p>
+            </td>
+          </tr>
           <tr>
             <td style="padding: 40px;">
               <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="padding-bottom: 30px;">
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #dc2626;">
-                      ❌ Deploy Falhou
-                    </h1>
-                  </td>
-                </tr>
                 <tr>
                   <td style="padding-bottom: 20px;">
                     <div style="background-color: #fef2f2; padding: 16px; border-radius: 6px; border-left: 3px solid #ef4444;">
@@ -265,27 +292,27 @@ HTMLEOF
                   <td style="padding-bottom: 30px;">
                     <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151; width: 140px;">Project</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Environment</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Environment</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STAGE_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151;">Version</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Branch</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
                         <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
-                        <td style="font-weight: 600; color: #374151;">Triggered by</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Triggered by</td>
                         <td style="color: #6b7280;">GITHUB_ACTOR_PLACEHOLDER</td>
                       </tr>
                       <tr>
-                        <td style="font-weight: 600; color: #374151;">Commit</td>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Commit</td>
                         <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
                       </tr>
                     </table>
@@ -293,7 +320,7 @@ HTMLEOF
                 </tr>
                 <tr>
                   <td style="padding-top: 20px;">
-                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: #dc2626; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
                       🔍 Ver Logs de Erro
                     </a>
                   </td>
@@ -302,8 +329,13 @@ HTMLEOF
             </td>
           </tr>
           <tr>
-            <td style="padding: 20px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
-              Nimbloo Platform · Deploy Automation
+            <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 2px solid #e5e7eb;">
+              <p style="margin: 0; color: #6b7280; font-size: 12px;">
+                <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
+              </p>
+              <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
+                Shipped with ❤️ by Mr. Shipper
+              </p>
             </td>
           </tr>
         </table>
@@ -318,7 +350,7 @@ HTMLEOF
 
   # Replace placeholders
   HTML="${HTML//EMOJI_PLACEHOLDER/$EMOJI}"
-  HTML="${HTML//ENV_COLOR_PLACEHOLDER/$ENV_COLOR}"
+  HTML="${HTML//BADGE_COLOR_PLACEHOLDER/$ENV_COLOR}"
   HTML="${HTML//STAGE_PLACEHOLDER/$STAGE}"
   HTML="${HTML//PROJECT_NAME_PLACEHOLDER/$PROJECT_NAME}"
   HTML="${HTML//VERSION_PLACEHOLDER/$VERSION}"
