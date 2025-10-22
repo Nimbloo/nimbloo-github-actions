@@ -58,7 +58,7 @@ inputs:
     default: ''
 
   started_at:
-    description: 'Workflow start timestamp (epoch seconds) for duration calculation. Use ${{ github.event.repository.pushed_at }} or job start time.'
+    description: 'Workflow start timestamp (epoch seconds) for duration calculation. Example: steps.deploy_start.outputs.timestamp'
     required: false
     default: ''
 
