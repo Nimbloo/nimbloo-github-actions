@@ -1,8 +1,16 @@
 # Nimbloo Deploy Notifier
 
-Notificações automáticas de deploy via Slack e Email (AWS SES).
+Notificações automáticas de deploy via Slack e Email (AWS SES) com branding Nimbloo.
 
-## 🚀 Uso
+## ✨ Recursos
+
+- 🎨 **Branding Nimbloo**: cores corporativas (#642878, #502364, #F05A28) e mascote Mr. Shipper
+- 📧 **Email HTML**: template profissional com gradiente e informações detalhadas
+- 💬 **Slack**: notificações formatadas com blocos e botões
+- ⏰ **Contexto completo**: timestamp, duração do deploy, mensagem do commit
+- 🔍 **Auto-detecção**: projeto, ambiente, versão, status
+
+## 🚀 Uso Básico
 
 ```yaml
 - uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
@@ -10,6 +18,32 @@ Notificações automáticas de deploy via Slack e Email (AWS SES).
 ```
 
 Auto-detecta: projeto, ambiente (dev/hml/prd), versão (pom.xml/package.json), status.
+
+## 🎯 Uso Recomendado (com duração)
+
+Para mostrar a duração do deploy nos emails:
+
+```yaml
+jobs:
+  deploy:
+    steps:
+      # 1. Salvar timestamp de início
+      - name: Save deploy start time
+        id: deploy_start
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+
+      # 2. Seus steps de deploy...
+      - name: Deploy
+        run: ./deploy.sh
+
+      # 3. Enviar notificação (com duração)
+      - name: Send Deployment Notifications
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        if: always()
+        with:
+          project_name: "Billing"
+          started_at: ${{ steps.deploy_start.outputs.timestamp }}
+```
 
 ## ⚙️ Configuração Opcional
 
@@ -37,9 +71,10 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
     stage: "prd"
     version: "2.1.0"
     custom_message: "Nova feature XYZ"
+    started_at: ${{ steps.deploy_start.outputs.timestamp }}
 ```
 
-**Notificações separadas:**
+**Notificações separadas (início e fim):**
 ```yaml
 - uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
@@ -67,6 +102,25 @@ Todos opcionais (auto-detecta se não passar):
 - `stack_name` → Stack CloudFormation
 - `aws_region` → Região AWS (padrão: us-east-1)
 - `custom_message` → Mensagem adicional
+- `started_at` → **NOVO!** Timestamp de início (epoch) para calcular duração
+
+---
+
+## 📊 Informações Mostradas no Email
+
+### Dados do Deploy
+- ✅ Project name, version, stack, region
+- 🌿 Branch e commit (com link)
+- 👤 Deployed by (usuário GitHub)
+- ⏰ **Timestamp**: data/hora exata do deploy
+- ⏱️ **Duration**: tempo total do deploy (se `started_at` fornecido)
+
+### Contexto
+- 💬 **Commit message**: mensagem do último commit para contexto
+
+### Ações Rápidas
+- 📊 Dashboard CloudWatch
+- 📋 Logs do GitHub Actions
 
 ---
 
@@ -79,5 +133,13 @@ Todos opcionais (auto-detecta se não passar):
 **Versão não detectada:**
 - Certifique-se que `pom.xml` ou `package.json` existe
 - Ou passe manualmente: `version: "1.0.0"`
+
+**Duração aparece como "N/A":**
+- Adicione o step que salva o timestamp no início do job
+- Passe o parâmetro `started_at` para a action
+
+**Mr. Shipper não aparece no email:**
+- Certifique-se que está usando a versão @v1 mais recente
+- A imagem é hospedada no GitHub: deve aparecer automaticamente
 
 **Issues:** https://github.com/Nimbloo/nimbloo-github-actions/issues
