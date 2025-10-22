@@ -371,7 +371,7 @@ runs:
                     </body>
                     </html>
 EOF
-)
+        )
         else
           HTML=$(cat <<'EOF'
                     <!DOCTYPE html>
@@ -455,7 +455,7 @@ EOF
                     </body>
                     </html>
 EOF
-)
+        )
         fi
 
         # Create email JSON
