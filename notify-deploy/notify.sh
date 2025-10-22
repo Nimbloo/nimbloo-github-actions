@@ -8,6 +8,26 @@ set +e  # Don't fail if notification fails
 
 COMMIT_SHORT="${GITHUB_SHA:0:7}"
 
+# Deploy timestamp
+DEPLOY_TIMESTAMP=$(date '+%d/%m/%Y às %H:%M:%S %Z')
+
+# Commit message (try to get from git, fallback to "N/A")
+COMMIT_MESSAGE=$(git log -1 --format=%s 2>/dev/null || echo "Deploy via GitHub Actions")
+
+# Calculate duration if STARTED_AT is provided
+DEPLOY_DURATION="N/A"
+if [ -n "$STARTED_AT" ]; then
+  CURRENT_TIME=$(date +%s)
+  DURATION_SECONDS=$((CURRENT_TIME - STARTED_AT))
+  MINUTES=$((DURATION_SECONDS / 60))
+  SECONDS=$((DURATION_SECONDS % 60))
+  if [ $MINUTES -gt 0 ]; then
+    DEPLOY_DURATION="${MINUTES}m ${SECONDS}s"
+  else
+    DEPLOY_DURATION="${SECONDS}s"
+  fi
+fi
+
 # Nimbloo brand colors
 NIMBLOO_PURPLE="#642878"
 NIMBLOO_DEEP_PURPLE="#502364"
@@ -210,7 +230,23 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Commit</td>
                         <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
                       </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Timestamp</td>
+                        <td style="color: #6b7280; font-size: 13px;">DEPLOY_TIMESTAMP_PLACEHOLDER</td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Duration</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
+                      </tr>
                     </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <div style="background-color: #f0f9ff; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
+                      <p style="margin: 0; color: NIMBLOO_PURPLE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
+                      <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -315,7 +351,23 @@ HTMLEOF
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Commit</td>
                         <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
                       </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Timestamp</td>
+                        <td style="color: #6b7280; font-size: 13px;">DEPLOY_TIMESTAMP_PLACEHOLDER</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Duration</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
+                      </tr>
                     </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 20px;">
+                    <div style="background-color: #f0f9ff; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
+                      <p style="margin: 0; color: NIMBLOO_PURPLE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
+                      <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -366,6 +418,9 @@ HTMLEOF
   HTML="${HTML//COMMIT_SHORT_PLACEHOLDER/$COMMIT_SHORT}"
   HTML="${HTML//DASHBOARD_URL_PLACEHOLDER/$DASHBOARD_URL}"
   HTML="${HTML//LOGS_URL_PLACEHOLDER/$LOGS_URL}"
+  HTML="${HTML//DEPLOY_TIMESTAMP_PLACEHOLDER/$DEPLOY_TIMESTAMP}"
+  HTML="${HTML//COMMIT_MESSAGE_PLACEHOLDER/$COMMIT_MESSAGE}"
+  HTML="${HTML//DEPLOY_DURATION_PLACEHOLDER/$DEPLOY_DURATION}"
 
   # Create email JSON
   jq -n \

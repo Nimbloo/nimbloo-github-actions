@@ -57,6 +57,11 @@ inputs:
     required: false
     default: ''
 
+  started_at:
+    description: 'Workflow start timestamp (epoch seconds) for duration calculation. Use ${{ github.event.repository.pushed_at }} or job start time.'
+    required: false
+    default: ''
+
 runs:
   using: 'composite'
   steps:
@@ -127,6 +132,9 @@ runs:
 
         # Custom message
         echo "CUSTOM_MESSAGE=${{ inputs.custom_message }}" >> "$GITHUB_ENV"
+
+        # Started at (for duration calculation)
+        echo "STARTED_AT=${{ inputs.started_at }}" >> "$GITHUB_ENV"
 
         # GitHub context variables
         echo "GITHUB_REPOSITORY=${{ github.repository }}" >> "$GITHUB_ENV"
