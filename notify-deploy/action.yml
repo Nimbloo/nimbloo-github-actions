@@ -218,7 +218,7 @@ runs:
                 ]
               }${CUSTOM_FIELD},
               {
-                \"type\": ${ACTIONS}
+                ${ACTIONS}
               }
             ]
           }" && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification (ignored)"
