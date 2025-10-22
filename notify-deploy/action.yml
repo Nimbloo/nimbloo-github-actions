@@ -1,0 +1,496 @@
+name: 'Nimbloo Deploy Notifier'
+description: 'Send Slack and Email notifications for deployments'
+author: 'Nimbloo'
+
+branding:
+  icon: 'bell'
+  color: 'blue'
+
+inputs:
+  project_name:
+    description: 'Project name (e.g., "Billing", "DCR API", "Auth Service")'
+    required: false
+    default: ${{ github.repository }}
+
+  stage:
+    description: 'Deployment stage (dev/hml/prd). Auto-detected from branch if not provided.'
+    required: false
+    default: ''
+
+  version:
+    description: 'Application version. Auto-detected from pom.xml or package.json if not provided.'
+    required: false
+    default: ''
+
+  status:
+    description: 'Deployment status (started/success/failed). Auto-detected from job status if not provided.'
+    required: false
+    default: ''
+
+  stack_name:
+    description: 'CloudFormation stack name'
+    required: false
+    default: ''
+
+  aws_region:
+    description: 'AWS region'
+    required: false
+    default: 'us-east-1'
+
+  slack_webhook_url:
+    description: 'Slack webhook URL (can also use repository variable SLACK_WEBHOOK_URL)'
+    required: false
+    default: ''
+
+  notification_email:
+    description: 'Email address to send notifications (can also use repository variable NOTIFICATION_EMAIL)'
+    required: false
+    default: ''
+
+  notification_email_from:
+    description: 'Sender email address (can also use repository variable NOTIFICATION_EMAIL_FROM)'
+    required: false
+    default: ''
+
+  custom_message:
+    description: 'Additional custom message to include in notifications'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup notification environment
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Auto-detect project name
+        PROJECT_NAME="${{ inputs.project_name }}"
+        if [ -z "$PROJECT_NAME" ] || [[ "$PROJECT_NAME" == *"/"* ]]; then
+          PROJECT_NAME=$(basename "${{ github.repository }}")
+        fi
+        echo "PROJECT_NAME=${PROJECT_NAME}" >> "$GITHUB_ENV"
+
+        # Auto-detect stage from branch
+        STAGE="${{ inputs.stage }}"
+        if [ -z "$STAGE" ]; then
+          case "${{ github.ref_name }}" in
+            master|main) STAGE="prd" ;;
+            staging|homolog) STAGE="hml" ;;
+            develop|dev) STAGE="dev" ;;
+            *) STAGE="dev" ;;
+          esac
+        fi
+        echo "STAGE=${STAGE}" >> "$GITHUB_ENV"
+
+        # Auto-detect version
+        VERSION="${{ inputs.version }}"
+        if [ -z "$VERSION" ]; then
+          if [ -f "pom.xml" ]; then
+            VERSION=$(grep -oP '<version>\K[^<]+' pom.xml | head -1 || echo "unknown")
+          elif [ -f "package.json" ]; then
+            VERSION=$(grep -oP '"version":\s*"\K[^"]+' package.json || echo "unknown")
+          else
+            VERSION="unknown"
+          fi
+        fi
+        echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+        # Auto-detect status
+        STATUS="${{ inputs.status }}"
+        if [ -z "$STATUS" ]; then
+          if [ "${{ job.status }}" == "success" ]; then
+            STATUS="success"
+          elif [ "${{ job.status }}" == "failure" ]; then
+            STATUS="failed"
+          else
+            STATUS="started"
+          fi
+        fi
+        echo "STATUS=${STATUS}" >> "$GITHUB_ENV"
+
+        # Stack name
+        STACK_NAME="${{ inputs.stack_name }}"
+        if [ -z "$STACK_NAME" ]; then
+          STACK_NAME="${PROJECT_NAME}-${STAGE}"
+        fi
+        echo "STACK_NAME=${STACK_NAME}" >> "$GITHUB_ENV"
+
+        # AWS Region
+        echo "AWS_REGION=${{ inputs.aws_region }}" >> "$GITHUB_ENV"
+
+        # Webhook/Email configs
+        SLACK_WEBHOOK="${{ inputs.slack_webhook_url }}"
+        if [ -z "$SLACK_WEBHOOK" ]; then
+          SLACK_WEBHOOK="${{ vars.SLACK_WEBHOOK_URL || '' }}"
+        fi
+        echo "SLACK_WEBHOOK=${SLACK_WEBHOOK}" >> "$GITHUB_ENV"
+
+        NOTIFICATION_EMAIL="${{ inputs.notification_email }}"
+        if [ -z "$NOTIFICATION_EMAIL" ]; then
+          NOTIFICATION_EMAIL="${{ vars.NOTIFICATION_EMAIL || '' }}"
+        fi
+        echo "NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}" >> "$GITHUB_ENV"
+
+        NOTIFICATION_EMAIL_FROM="${{ inputs.notification_email_from }}"
+        if [ -z "$NOTIFICATION_EMAIL_FROM" ]; then
+          NOTIFICATION_EMAIL_FROM="${{ vars.NOTIFICATION_EMAIL_FROM || vars.NOTIFICATION_EMAIL || '' }}"
+        fi
+        echo "NOTIFICATION_EMAIL_FROM=${NOTIFICATION_EMAIL_FROM}" >> "$GITHUB_ENV"
+
+        # Custom message
+        echo "CUSTOM_MESSAGE=${{ inputs.custom_message }}" >> "$GITHUB_ENV"
+
+        echo "✅ Notification config loaded:"
+        echo "  Project: ${PROJECT_NAME}"
+        echo "  Stage: ${STAGE}"
+        echo "  Version: ${VERSION}"
+        echo "  Status: ${STATUS}"
+        echo "  Stack: ${STACK_NAME}"
+
+    - name: Send Slack notification
+      if: env.SLACK_WEBHOOK != ''
+      shell: bash
+      run: |
+        set +e  # Don't fail the job if notification fails
+
+        # Determine emoji and color based on status
+        case "$STATUS" in
+          "started")
+            EMOJI="🚀"
+            COLOR="#3b82f6"
+            STATUS_TEXT="Deploy Iniciado"
+            ;;
+          "success")
+            if [ "$STAGE" == "prd" ]; then
+              EMOJI="🎉"
+            else
+              EMOJI="✅"
+            fi
+            COLOR="#10b981"
+            STATUS_TEXT="Deploy Concluído com Sucesso"
+            ;;
+          "failed")
+            EMOJI="❌"
+            COLOR="#ef4444"
+            STATUS_TEXT="Deploy Falhou"
+            ;;
+          *)
+            EMOJI="ℹ️"
+            COLOR="#6b7280"
+            STATUS_TEXT="Deploy Update"
+            ;;
+        esac
+
+        # Build custom message field
+        CUSTOM_FIELD=""
+        if [ -n "$CUSTOM_MESSAGE" ]; then
+          CUSTOM_FIELD=",{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"💬 *Mensagem:* $CUSTOM_MESSAGE\"}}"
+        fi
+
+        # Dashboard and Lambda URLs
+        DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
+        LAMBDA_URL="https://console.aws.amazon.com/lambda/home?region=${AWS_REGION}#/functions/${STACK_NAME}"
+        LOGS_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+        # Build actions based on status
+        if [ "$STATUS" == "success" ]; then
+          ACTIONS="\"actions\":{\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📊 Dashboard\"},\"url\":\"${DASHBOARD_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"⚡ Lambda\"},\"url\":\"${LAMBDA_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📋 Logs\"},\"url\":\"${LOGS_URL}\"}]}"
+        else
+          ACTIONS="\"actions\":{\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"🔍 Ver Logs\"},\"url\":\"${LOGS_URL}\",\"style\":\"danger\"}]}"
+        fi
+
+        curl -X POST "$SLACK_WEBHOOK" \
+          -H 'Content-Type: application/json' \
+          -d "{
+            \"text\": \"${EMOJI} *${STATUS_TEXT} - ${PROJECT_NAME}*\",
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${{ github.ref_name }}\\\`\\n*Actor:* ${{ github.actor }}\\n*Commit:* <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"fields\": [
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Stack:* \\\`${STACK_NAME}\\\`\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Region:* \\\`${AWS_REGION}\\\`\"
+                  }
+                ]
+              }${CUSTOM_FIELD},
+              {
+                \"type\": ${ACTIONS}
+              }
+            ]
+          }" && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification (ignored)"
+
+    - name: Send Email notification
+      if: env.NOTIFICATION_EMAIL != ''
+      shell: bash
+      run: |
+        set +e  # Don't fail the job if notification fails
+
+        # Determine subject and emoji
+        case "$STATUS" in
+          "started")
+            EMOJI="🚀"
+            SUBJECT="${EMOJI} ${PROJECT_NAME} [${STAGE}] v${VERSION} - Deploy Iniciado"
+            ;;
+          "success")
+            if [ "$STAGE" == "prd" ]; then
+              EMOJI="🎉"
+            else
+              EMOJI="✅"
+            fi
+            SUBJECT="${EMOJI} ${PROJECT_NAME} [${STAGE}] v${VERSION} - Deploy Sucesso"
+            ;;
+          "failed")
+            EMOJI="❌"
+            SUBJECT="${EMOJI} ${PROJECT_NAME} [${STAGE}] v${VERSION} - Deploy FALHOU"
+            ;;
+          *)
+            EMOJI="ℹ️"
+            SUBJECT="${EMOJI} ${PROJECT_NAME} [${STAGE}] v${VERSION} - Update"
+            ;;
+        esac
+
+        # Determine color
+        case "${STAGE}" in
+          "dev") ENV_COLOR="#3b82f6" ;;
+          "hml") ENV_COLOR="#f59e0b" ;;
+          "prd") ENV_COLOR="#10b981" ;;
+          *) ENV_COLOR="#6b7280" ;;
+        esac
+
+        # URLs
+        DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
+        COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+        COMMIT_SHORT="${GITHUB_SHA:0:7}"
+        LOGS_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+        # Build HTML email based on status
+        if [ "$STATUS" == "success" ]; then
+          # Success email
+          HTML=$(cat <<'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <tr>
+            <td style="padding: 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827;">
+                      EMOJI_PLACEHOLDER Deploy Concluído com Sucesso
+                    </h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 20px;">
+                    <div style="background-color: ENV_COLOR_PLACEHOLDER; padding: 3px 12px; border-radius: 4px; display: inline-block;">
+                      <span style="color: #ffffff; font-weight: 600; font-size: 12px; text-transform: uppercase;">STAGE_PLACEHOLDER</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151; width: 140px;">Project</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Version</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151;">Stack</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STACK_NAME_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Region</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">AWS_REGION_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151;">Branch</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">BRANCH_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Deployed by</td>
+                        <td style="color: #6b7280;">ACTOR_PLACEHOLDER</td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151;">Commit</td>
+                        <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 20px;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding-right: 10px;">
+                          <a href="DASHBOARD_URL_PLACEHOLDER" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                            📊 Ver Dashboard
+                          </a>
+                        </td>
+                        <td>
+                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: #6b7280; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                            📋 Ver Logs
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 20px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
+              Nimbloo Platform · Deploy Automation
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+EOF
+)
+        else
+          # Failure email
+          HTML=$(cat <<'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-left: 4px solid #ef4444;">
+          <tr>
+            <td style="padding: 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #dc2626;">
+                      ❌ Deploy Falhou
+                    </h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 20px;">
+                    <div style="background-color: #fef2f2; padding: 16px; border-radius: 6px; border-left: 3px solid #ef4444;">
+                      <p style="margin: 0; color: #991b1b; font-weight: 600;">⚠️ Ação Necessária</p>
+                      <p style="margin: 8px 0 0 0; color: #dc2626; font-size: 14px;">O deploy falhou. Verifique os logs para detalhes do erro.</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151; width: 140px;">Project</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Environment</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STAGE_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151;">Version</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Branch</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">BRANCH_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: #374151;">Triggered by</td>
+                        <td style="color: #6b7280;">ACTOR_PLACEHOLDER</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: #374151;">Commit</td>
+                        <td style="color: #6b7280;"><a href="COMMIT_URL_PLACEHOLDER" style="color: #3b82f6; text-decoration: none;">COMMIT_SHORT_PLACEHOLDER</a></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 20px;">
+                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: #dc2626; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                      🔍 Ver Logs de Erro
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 20px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
+              Nimbloo Platform · Deploy Automation
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+EOF
+)
+        fi
+
+        # Replace placeholders
+        HTML=$(echo "$HTML" | \
+          sed "s|EMOJI_PLACEHOLDER|${EMOJI}|g" | \
+          sed "s|ENV_COLOR_PLACEHOLDER|${ENV_COLOR}|g" | \
+          sed "s|STAGE_PLACEHOLDER|${STAGE}|g" | \
+          sed "s|PROJECT_NAME_PLACEHOLDER|${PROJECT_NAME}|g" | \
+          sed "s|VERSION_PLACEHOLDER|${VERSION}|g" | \
+          sed "s|STACK_NAME_PLACEHOLDER|${STACK_NAME}|g" | \
+          sed "s|AWS_REGION_PLACEHOLDER|${AWS_REGION}|g" | \
+          sed "s|BRANCH_PLACEHOLDER|${{ github.ref_name }}|g" | \
+          sed "s|ACTOR_PLACEHOLDER|${{ github.actor }}|g" | \
+          sed "s|COMMIT_URL_PLACEHOLDER|${COMMIT_URL}|g" | \
+          sed "s|COMMIT_SHORT_PLACEHOLDER|${COMMIT_SHORT}|g" | \
+          sed "s|DASHBOARD_URL_PLACEHOLDER|${DASHBOARD_URL}|g" | \
+          sed "s|LOGS_URL_PLACEHOLDER|${LOGS_URL}|g")
+
+        # Create email JSON
+        jq -n \
+          --arg subject "$SUBJECT" \
+          --arg html "$HTML" \
+          '{"Subject": {"Data": $subject, "Charset": "UTF-8"}, "Body": {"Html": {"Data": $html, "Charset": "UTF-8"}}}' \
+          > /tmp/email.json
+
+        # Send email via SES
+        aws ses send-email \
+          --from "${NOTIFICATION_EMAIL_FROM}" \
+          --destination "ToAddresses=${NOTIFICATION_EMAIL}" \
+          --message file:///tmp/email.json \
+          --region ${AWS_REGION} && echo "✅ Email notification sent" || echo "⚠️ Failed to send email notification (ignored)"
+
+        rm -f /tmp/email.json
