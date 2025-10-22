@@ -7,13 +7,7 @@ Actions reutilizáveis para notificações de deploy via Slack e Email.
 Adicione no final do seu workflow de deploy:
 
 ```yaml
-- uses: actions/checkout@v4
-  with:
-    repository: Nimbloo/nimbloo-github-actions
-    ref: v1
-    path: .github/actions-temp
-
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   if: always()
 ```
 
@@ -31,7 +25,7 @@ Auto-detecta: projeto, ambiente (dev/hml/prd), versão, status.
 Personalize passando inputs:
 
 ```yaml
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
     project_name: "Meu Projeto"
     stage: "prd"

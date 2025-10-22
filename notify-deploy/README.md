@@ -5,13 +5,7 @@ Notificações automáticas de deploy via Slack e Email (AWS SES).
 ## 🚀 Uso
 
 ```yaml
-- uses: actions/checkout@v4
-  with:
-    repository: Nimbloo/nimbloo-github-actions
-    ref: v1
-    path: .github/actions-temp
-
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   if: always()
 ```
 
@@ -37,7 +31,7 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
 
 **Com parâmetros customizados:**
 ```yaml
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
     project_name: "DCR API"
     stage: "prd"
@@ -47,14 +41,14 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
 
 **Notificações separadas:**
 ```yaml
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   with:
     status: "started"
 
 - name: Deploy
   run: ./deploy.sh
 
-- uses: ./.github/actions-temp/notify-deploy
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
   if: success()
   with:
     status: "success"
