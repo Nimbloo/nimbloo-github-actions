@@ -19,31 +19,56 @@ Notificações automáticas de deploy via Slack e Email (AWS SES) com branding N
 
 Auto-detecta: projeto, ambiente (dev/hml/prd), versão (pom.xml/package.json), status.
 
-## 🎯 Uso Recomendado (com duração)
+## 🎯 Uso Recomendado (Notificação Completa de Pipeline)
 
-Para mostrar a duração do deploy nos emails:
+Para melhor visibilidade do ciclo de vida do deploy, envie notificações no **início** e no **fim**:
 
 ```yaml
 jobs:
   deploy:
     steps:
-      # 1. Salvar timestamp de início
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. Salvar timestamp de início do deploy
       - name: Save deploy start time
         id: deploy_start
         run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
 
-      # 2. Seus steps de deploy...
-      - name: Deploy
-        run: ./deploy.sh
-
-      # 3. Enviar notificação (com duração)
-      - name: Send Deployment Notifications
+      # 2. Notificar INÍCIO do deploy
+      - name: Notify deploy started
         uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
-        if: always()
         with:
           project_name: "Billing"
+          status: "started"
+          stack_name: ${{ env.STACK_PREFIX }}-${{ env.STAGE }}
           started_at: ${{ steps.deploy_start.outputs.timestamp }}
+          slack_webhook_url: ${{ vars.SLACK_WEBHOOK_URL }}
+          notification_email: ${{ vars.NOTIFICATION_EMAIL }}
+          notification_email_from: ${{ vars.NOTIFICATION_EMAIL_FROM }}
+
+      # 3. Seus steps de build e deploy...
+      - name: Build and Deploy
+        run: ./deploy.sh
+
+      # 4. Notificar FIM do deploy (sucesso ou erro)
+      - name: Notify deploy completed
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        if: always()  # Sempre executa, mesmo em caso de falha
+        with:
+          project_name: "Billing"
+          stack_name: ${{ env.STACK_PREFIX }}-${{ env.STAGE }}
+          started_at: ${{ steps.deploy_start.outputs.timestamp }}
+          slack_webhook_url: ${{ vars.SLACK_WEBHOOK_URL }}
+          notification_email: ${{ vars.NOTIFICATION_EMAIL }}
+          notification_email_from: ${{ vars.NOTIFICATION_EMAIL_FROM }}
 ```
+
+**Benefícios:**
+- 🟠 **Início**: Email/Slack com header laranja "Deploy Iniciado" - time sabe que o deploy começou
+- 🟣 **Fim**: Email/Slack com header roxo/verde "Deploy Concluído" - mostra duração real calculada
+- 📊 **Rastreabilidade**: Histórico completo do ciclo de vida de cada deploy
+- ⏱️ **Monitoramento**: Útil para deploys longos - acompanhar progresso em tempo real
 
 ## ⚙️ Configuração Opcional
 
