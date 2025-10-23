@@ -168,7 +168,104 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
 
 
   # Build HTML email
-  if [ "$STATUS" == "success" ]; then
+  if [ "$STATUS" == "started" ]; then
+    HTML=$(cat <<'HTMLEOF'
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(240, 90, 40, 0.15); overflow: hidden;">
+          <!-- Header with orange gradient (em andamento) -->
+          <tr>
+            <td style="background: linear-gradient(135deg, NIMBLOO_ORANGE_PLACEHOLDER 0%, #e04a1e 100%); padding: 30px 40px; text-align: center;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
+                🚀 Deploy Iniciado!
+              </h1>
+              <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
+                Mr. Shipper está preparando o ship...
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding-bottom: 25px;" align="center">
+                    <div style="background-color: BADGE_COLOR_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
+                      <span style="color: #ffffff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">STAGE_PLACEHOLDER</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Triggered by</td>
+                        <td style="color: #6b7280;">GITHUB_ACTOR_PLACEHOLDER</td>
+                      </tr>
+                      <tr style="background-color: #f9fafb;">
+                        <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Timestamp</td>
+                        <td style="color: #6b7280; font-size: 13px;">DEPLOY_TIMESTAMP_PLACEHOLDER</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 30px;">
+                    <div style="background-color: #fff7ed; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_ORANGE_PLACEHOLDER;">
+                      <p style="margin: 0; color: NIMBLOO_ORANGE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
+                      <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 10px;" align="center">
+                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                      📋 Acompanhar Deploy
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 2px solid #e5e7eb;">
+              <p style="margin: 0; color: #6b7280; font-size: 12px;">
+                <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
+              </p>
+              <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
+                Shipped with ❤️ by Mr. Shipper
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+HTMLEOF
+)
+  elif [ "$STATUS" == "success" ]; then
     HTML=$(cat <<'HTMLEOF'
 <!DOCTYPE html>
 <html>
