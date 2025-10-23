@@ -98,7 +98,7 @@ if [ -n "$SLACK_WEBHOOK" ]; then
           \"type\": \"section\",
           \"text\": {
             \"type\": \"mrkdwn\",
-            \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${GITHUB_REF_NAME}\\\`\\n*Actor:* ${GITHUB_ACTOR}\\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\"
+            \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${GITHUB_REF_NAME}\\\`\\n*Actor:* ${GITHUB_ACTOR}\\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Timestamp:* ${DEPLOY_TIMESTAMP}\n*Duration:* ${DEPLOY_DURATION}\n*Message:* ${COMMIT_MESSAGE_ESCAPED}\"
           }
         },
         {
