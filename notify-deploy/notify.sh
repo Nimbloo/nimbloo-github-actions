@@ -277,7 +277,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding-bottom: 25px;" align="center">
-                    <div style="background-color: BADGE_COLOR_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
+                    <div style="background-color: NIMBLOO_ORANGE_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
                       <span style="color: #ffffff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">STAGE_PLACEHOLDER</span>
                     </div>
                   </td>
@@ -439,7 +439,7 @@ HTMLEOF
                           </a>
                         </td>
                         <td style="padding: 0 8px;">
-                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
                             📋 Logs
                           </a>
                         </td>
