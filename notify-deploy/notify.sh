@@ -44,84 +44,144 @@ NIMBLOO_ORANGE="#F05A28"
 if [ -n "$SLACK_WEBHOOK" ]; then
   echo "📱 Sending Slack notification..."
 
-  # Determine emoji and status text
   case "$STATUS" in
     "started")
-      EMOJI="🚀"
-      STATUS_TEXT="Deploy Iniciado"
-      ;;
-    "success")
-      if [ "$STAGE" == "prd" ]; then
-        EMOJI="🎉"
-      else
-        EMOJI="✅"
-      fi
-      STATUS_TEXT="Deploy Concluído com Sucesso"
-      ;;
-    "failed")
-      EMOJI="❌"
-      STATUS_TEXT="Deploy Falhou"
-      ;;
-    *)
-      EMOJI="ℹ️"
-      STATUS_TEXT="Deploy Update"
-      ;;
-  esac
-
-  # Build custom message field
-  CUSTOM_FIELD=""
-  if [ -n "$CUSTOM_MESSAGE" ]; then
-    CUSTOM_FIELD=",{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"💬 *Mensagem:* $CUSTOM_MESSAGE\"}}"
-  fi
-
-  # URLs
-  DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
-  LAMBDA_URL="https://console.aws.amazon.com/lambda/home?region=${AWS_REGION}#/functions/${STACK_NAME}"
-  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"  
-  # Mr. Shipper image (hosted on GitHub)
-  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/mr.shipper.png"
-
-
-  # Build actions based on status
-  if [ "$STATUS" == "success" ]; then
-    ACTIONS="\"type\":\"actions\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📊 Dashboard\"},\"url\":\"${DASHBOARD_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"⚡ Lambda\"},\"url\":\"${LAMBDA_URL}\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"📋 Logs\"},\"url\":\"${LOGS_URL}\"}]"
-  else
-    ACTIONS="\"type\":\"actions\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"🔍 Ver Logs\"},\"url\":\"${LOGS_URL}\",\"style\":\"danger\"}]"
-  fi
-
-  curl -X POST "$SLACK_WEBHOOK" \
-    -H 'Content-Type: application/json; charset=utf-8' \
-    -d "{
-      \"text\": \"${EMOJI} *${STATUS_TEXT} - ${PROJECT_NAME}*\",
-      \"blocks\": [
+      cat > /tmp/slack-payload.json <<SLACKJSON
+{
+  "text": "🚀 *Deploy Iniciado - ${PROJECT_NAME}*",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "🚀 *Deploy Iniciado - ${PROJECT_NAME}*\n*Environment:* \`${STAGE}\`\n*Version:* \`${VERSION}\`\n*Branch:* \`${GITHUB_REF_NAME}\`\n*Actor:* ${GITHUB_ACTOR}\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Message:* ${COMMIT_MESSAGE_ESCAPED}"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
         {
-          \"type\": \"section\",
-          \"text\": {
-            \"type\": \"mrkdwn\",
-            \"text\": \"${EMOJI} *${STATUS_TEXT}*\\n*Project:* \\\`${PROJECT_NAME}\\\`\\n*Environment:* \\\`${STAGE}\\\`\\n*Version:* \\\`${VERSION}\\\`\\n*Branch:* \\\`${GITHUB_REF_NAME}\\\`\\n*Actor:* ${GITHUB_ACTOR}\\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Timestamp:* ${DEPLOY_TIMESTAMP}\n*Duration:* ${DEPLOY_DURATION}\n*Message:* ${COMMIT_MESSAGE_ESCAPED}\"
-          }
-        },
-        {
-          \"type\": \"section\",
-          \"fields\": [
-            {
-              \"type\": \"mrkdwn\",
-              \"text\": \"*Stack:* \\\`${STACK_NAME}\\\`\"
-            },
-            {
-              \"type\": \"mrkdwn\",
-              \"text\": \"*Region:* \\\`${AWS_REGION}\\\`\"
-            }
-          ]
-        }${CUSTOM_FIELD}
-        ,{
-          ${ACTIONS}
+          "type": "mrkdwn",
+          "text": "⏳ Deploy em progresso... | <https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}|Ver logs>"
         }
       ]
-    }" && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification (ignored)"
+    }
+  ]
+}
+SLACKJSON
+      curl -X POST "$SLACK_WEBHOOK" -H 'Content-Type: application/json; charset=utf-8' -d @/tmp/slack-payload.json \
+        && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification"
+      rm -f /tmp/slack-payload.json
+      ;;
+
+    "success")
+      DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
+      LAMBDA_URL="https://console.aws.amazon.com/lambda/home?region=${AWS_REGION}#/functions/${STACK_NAME}"
+
+      cat > /tmp/slack-payload.json <<SLACKJSON
+{
+  "text": "✅ *Deploy Concluído com Sucesso - ${PROJECT_NAME}*",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "✅ *Deploy Concluído com Sucesso*\n*Environment:* \`${STAGE}\`\n*Version:* \`${VERSION}\`\n*Branch:* \`${GITHUB_REF_NAME}\`\n*Actor:* ${GITHUB_ACTOR}\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Message:* ${COMMIT_MESSAGE_ESCAPED}\n*Duration:* ${DEPLOY_DURATION}"
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Stack:* \`${STACK_NAME}\`"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Region:* \`${AWS_REGION}\`"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "📊 Dashboard"
+          },
+          "url": "${DASHBOARD_URL}"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "⚡ Lambda"
+          },
+          "url": "${LAMBDA_URL}"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "📋 Logs"
+          },
+          "url": "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        }
+      ]
+    }
+  ]
+}
+SLACKJSON
+      curl -X POST "$SLACK_WEBHOOK" -H 'Content-Type: application/json; charset=utf-8' -d @/tmp/slack-payload.json \
+        && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification"
+      rm -f /tmp/slack-payload.json
+      ;;
+
+    "failed")
+      cat > /tmp/slack-payload.json <<SLACKJSON
+{
+  "text": "❌ *Deploy Falhou - ${PROJECT_NAME}*",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "❌ *Deploy Falhou*\n*Environment:* \`${STAGE}\`\n*Version:* \`${VERSION}\`\n*Branch:* \`${GITHUB_REF_NAME}\`\n*Actor:* ${GITHUB_ACTOR}\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Message:* ${COMMIT_MESSAGE_ESCAPED}"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "⚠️ *Ação necessária:* Verifique os logs para detalhes do erro."
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "🔍 Ver Logs"
+          },
+          "url": "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}",
+          "style": "danger"
+        }
+      ]
+    }
+  ]
+}
+SLACKJSON
+      curl -X POST "$SLACK_WEBHOOK" -H 'Content-Type: application/json; charset=utf-8' -d @/tmp/slack-payload.json \
+        && echo "✅ Slack notification sent" || echo "⚠️ Failed to send Slack notification"
+      rm -f /tmp/slack-payload.json
+      ;;
+  esac
 fi
 
-#==============================================
 # EMAIL NOTIFICATION
 #==============================================
 if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
