@@ -15,7 +15,8 @@ DEPLOY_TIMESTAMP=$(date '+%d/%m/%Y às %H:%M:%S %Z')
 COMMIT_MESSAGE=$(git log -1 --format=%s 2>/dev/null || echo "Deploy via GitHub Actions")
 # Escape for JSON (replace quotes and newlines)
 COMMIT_MESSAGE_ESCAPED=$(echo "$COMMIT_MESSAGE" | sed 's/"/\\"/g' | sed "s/'/\'/g" | tr -d '
-')
+
+')
 
 # Calculate duration if STARTED_AT is provided
 DEPLOY_DURATION="N/A"
