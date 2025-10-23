@@ -13,11 +13,13 @@ Notificações automáticas de deploy via Slack e Email (AWS SES) com branding N
 ## 🚀 Uso Básico
 
 ```yaml
-- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
   if: always()
 ```
 
 Auto-detecta: projeto, ambiente (dev/hml/prd), versão (pom.xml/package.json), status.
+
+> 💡 **Nota**: Usamos `@master` para sempre ter as últimas correções automaticamente. Se preferir versão fixa, use `@v1.0.0`.
 
 ## 🎯 Uso Recomendado (Notificação Completa de Pipeline)
 
@@ -37,7 +39,7 @@ jobs:
 
       # 2. Notificar INÍCIO do deploy
       - name: Notify deploy started
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
         with:
           project_name: "Billing"
           status: "started"
@@ -53,7 +55,7 @@ jobs:
 
       # 4. Notificar FIM do deploy (sucesso ou erro)
       - name: Notify deploy completed
-        uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+        uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
         if: always()  # Sempre executa, mesmo em caso de falha
         with:
           project_name: "Billing"
@@ -90,7 +92,7 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
 
 **Com parâmetros customizados:**
 ```yaml
-- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
   with:
     project_name: "DCR API"
     stage: "prd"
@@ -101,14 +103,14 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
 
 **Notificações separadas (início e fim):**
 ```yaml
-- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
   with:
     status: "started"
 
 - name: Deploy
   run: ./deploy.sh
 
-- uses: Nimbloo/nimbloo-github-actions/notify-deploy@v1
+- uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
   if: success()
   with:
     status: "success"
@@ -164,7 +166,7 @@ Todos opcionais (auto-detecta se não passar):
 - Passe o parâmetro `started_at` para a action
 
 **Mr. Shipper não aparece no email:**
-- Certifique-se que está usando a versão @v1 mais recente
+- Certifique-se que está usando a versão @master mais recente
 - A imagem é hospedada no GitHub: deve aparecer automaticamente
 
 **Issues:** https://github.com/Nimbloo/nimbloo-github-actions/issues
