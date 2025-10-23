@@ -241,9 +241,38 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   # URLs
   DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
   COMMIT_URL="https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
-  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"  
-  # Capt. Tommy image (hosted on GitHub)
-  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/capt.tommy.png"
+  LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+  # Capt. Tommy image - Select based on status and stage
+  case "$STATUS" in
+    "started")
+      TOMMY_IMAGE="tommy_progress.png"
+      ;;
+    "success")
+      case "$STAGE" in
+        "dev")
+          TOMMY_IMAGE="tommy_success_dev.png"
+          ;;
+        "hml")
+          TOMMY_IMAGE="tommy_success_staging.png"
+          ;;
+        "prd")
+          TOMMY_IMAGE="tommy_success_prod.png"
+          ;;
+        *)
+          TOMMY_IMAGE="tommy_success_dev.png"  # fallback
+          ;;
+      esac
+      ;;
+    "failed")
+      TOMMY_IMAGE="tommy_fail.png"
+      ;;
+    *)
+      TOMMY_IMAGE="capt.tommy.png"  # fallback genérico
+      ;;
+  esac
+
+  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/${TOMMY_IMAGE}"
 
 
   # Build HTML email
