@@ -168,3 +168,136 @@ Todos opcionais (auto-detecta se não passar):
 - A imagem é hospedada no GitHub: deve aparecer automaticamente
 
 **Issues:** https://github.com/Nimbloo/nimbloo-github-actions/issues
+
+---
+
+## 📊 Como Funciona - Fluxo de Notificações
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    GITHUB ACTIONS WORKFLOW                       │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    ┌──────────────────┐
+                    │  1. Deploy Start │
+                    │   (timestamp)    │
+                    └──────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│           NOTIFY-DEPLOY ACTION (status: "started")              │
+├─────────────────────────────────────────────────────────────────┤
+│  🎯 Auto-detect:                                                │
+│     • Project name (from repo)                                  │
+│     • Stage (develop → dev, staging → hml, master → prd)        │
+│     • Version (pom.xml or package.json)                         │
+│                                                                 │
+│  📱 SLACK:                                                      │
+│     • Emoji: 🚀 Deploy Iniciado                                 │
+│     • Fields: Environment, Version, Branch, Actor, Commit       │
+│     • Context: "Deploy em progresso..." + link logs             │
+│                                                                 │
+│  📧 EMAIL:                                                      │
+│     • Header: Gradiente LARANJA (#F05A28)                       │
+│     • Title: "🚀 Deploy Iniciado!"                              │
+│     • Badge: Cor por ambiente (dev=roxo, hml=laranja, prd=roxo)│
+│     • Info: Project, Version, Branch, Actor, Timestamp          │
+│     • Button: "Acompanhar Deploy" (link logs)                   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    ┌──────────────────┐
+                    │  2. Build/Deploy │
+                    │   (seus steps)   │
+                    └──────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│      NOTIFY-DEPLOY ACTION (status: auto-detect or "failed")     │
+├─────────────────────────────────────────────────────────────────┤
+│  ⏱️  Calcula Duração:                                           │
+│     • current_time - started_at = duration                      │
+│     • Formato: "3m 45s" ou "25s"                                │
+│                                                                 │
+│  ✅ SE SUCCESS:                                                 │
+│     📱 SLACK:                                                   │
+│        • Emoji: ✅ (dev/hml) ou 🎉 (PROD!)                      │
+│        • Fields: + Duration, Stack, Region                      │
+│        • Buttons: Dashboard, Lambda, Logs                       │
+│                                                                 │
+│     📧 EMAIL:                                                   │
+│        • Header: Gradiente ROXO (#642878 → #502364)             │
+│        • Title: "✅ Deploy Concluído!" (🎉 em PRD)              │
+│        • Info: + Stack, Region, Duration                        │
+│        • Buttons: Dashboard, Logs                               │
+│                                                                 │
+│  ❌ SE FAILED:                                                  │
+│     📱 SLACK:                                                   │
+│        • Emoji: ❌ Deploy Falhou                                │
+│        • Color: Red (danger button style)                       │
+│        • Message: "Ação necessária"                             │
+│        • Button: "Ver Logs" (red)                               │
+│                                                                 │
+│     📧 EMAIL:                                                   │
+│        • Header: Gradiente VERMELHO (#dc2626)                   │
+│        • Title: "❌ Deploy Falhou"                              │
+│        • Alert: Warning box "Ação Necessária"                   │
+│        • Button: "Ver Logs de Erro"                             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 🎨 Lógica dos Emojis e Cores
+
+| Status    | Ambiente      | Emoji Slack | Emoji Email | Cor Header Email     | Motivo                          |
+|-----------|---------------|-------------|-------------|----------------------|---------------------------------|
+| started   | Todos         | 🚀          | 🚀          | 🟠 Laranja (#F05A28) | Deploy em andamento             |
+| success   | dev/hml       | ✅          | ✅          | 🟣 Roxo (#642878)    | Deploy normal concluído         |
+| success   | **PRD**       | **🎉**      | **🎉**      | 🟣 Roxo Escuro       | **Produção merece comemoração!**|
+| failed    | Todos         | ❌          | ❌          | 🔴 Vermelho (#dc2626)| Erro - ação necessária          |
+
+#### 🎉 Por que emoji diferente em Produção?
+
+```javascript
+// No código:
+if [ "$STAGE" == "prd" ]; then
+  EMOJI="🎉"  // Festa! É produção!
+else
+  EMOJI="✅"  // Check mark simples
+fi
+```
+
+**Motivo:**
+- Deploy em **produção é um evento especial** que afeta usuários reais
+- Emoji 🎉 **destaca visualmente** mensagens críticas de PRD no Slack
+- Ajuda o time a **identificar rapidamente** deploys de produção vs desenvolvimento
+- **Comemoração merecida** quando tudo funciona em PRD! 🎊
+
+#### 🎨 Cores dos Badges por Ambiente
+
+```
+DEV → Roxo   #642878 (Nimbloo Purple)
+HML → Laranja #F05A28 (Nimbloo Orange)  
+PRD → Roxo Escuro #502364 (Nimbloo Deep Purple)
+```
+
+### 🔧 Detalhes Técnicos de Implementação
+
+#### 📱 Slack
+- **Encoding UTF-8**: Salva payload em `/tmp/slack-payload.json` antes de enviar
+  - **Por quê?** Usar `-d "{...}"` inline quebra encoding de emojis
+- **Content-Type**: `application/json; charset=utf-8`  
+- **Formato**: Slack Block Kit com `type: "mrkdwn"` para formatação
+- **Backticks**: Campos técnicos (`dev`, `1.1.2`) aparecem como código inline
+
+#### 📧 Email
+- **Template**: HTML inline com CSS (sem arquivos externos)
+- **Imagens**: Mr. Shipper hospedado no GitHub (URL pública, não base64)
+- **Cores Nimbloo**:
+  - Roxo: `#642878`
+  - Roxo Escuro: `#502364`
+  - Laranja: `#F05A28`
+- **JSON**: Criado via `jq` e enviado para AWS SES
+- **Encoding**: UTF-8 charset em Subject e Body HTML
+
+---
