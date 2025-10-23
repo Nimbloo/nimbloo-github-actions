@@ -86,6 +86,35 @@ aws ses verify-email-identity --email-address noreply@nimbloo.ai
 
 **Slack:** [Criar webhook](https://api.slack.com/apps) → Incoming Webhooks → Copiar URL
 
+### ⚠️ IMPORTANTE: Configure AWS Credentials ANTES da notificação
+
+Se você quiser enviar **emails** via SES, o step \`Configure AWS Credentials\` **DEVE vir ANTES** do \`Notify deploy started\`:
+
+\`\`\`yaml
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Save deploy start time
+    id: deploy_start
+    run: echo "timestamp=$(date +%s)" >> \$GITHUB_OUTPUT
+
+  # ✅ CORRETO: Configure AWS ANTES da notificação
+  - name: Configure AWS credentials (OIDC)
+    uses: aws-actions/configure-aws-credentials@v4
+    with:
+      aws-region: us-east-1
+      role-to-assume: \${{ vars.AWS_ROLE_TO_ASSUME }}
+
+  - name: Notify deploy started  # ← Agora tem credenciais AWS!
+    uses: Nimbloo/nimbloo-github-actions/notify-deploy@master
+    with:
+      notification_email: \${{ vars.NOTIFICATION_EMAIL }}
+      notification_email_from: \${{ vars.NOTIFICATION_EMAIL_FROM }}
+\`\`\`
+
+❌ **Erro comum**: Colocar notificação antes do Configure AWS = email não funciona!
+
 ---
 
 ## 📖 Exemplos
