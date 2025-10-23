@@ -115,10 +115,10 @@ runs:
         fi
         echo "STATUS=${STATUS}" >> "$GITHUB_ENV"
 
-        # Stack name
+        # Stack name (sanitize: lowercase and replace spaces with hyphens)
         STACK_NAME="${{ inputs.stack_name }}"
         if [ -z "$STACK_NAME" ]; then
-          STACK_NAME="${PROJECT_NAME}-${STAGE}"
+          STACK_NAME=$(echo "${PROJECT_NAME}-${STAGE}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
         fi
         echo "STACK_NAME=${STACK_NAME}" >> "$GITHUB_ENV"
 
