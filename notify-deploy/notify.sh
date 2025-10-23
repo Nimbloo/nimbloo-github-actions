@@ -9,7 +9,7 @@ set +e  # Don't fail if notification fails
 COMMIT_SHORT="${GITHUB_SHA:0:7}"
 
 # Deploy timestamp
-DEPLOY_TIMESTAMP=$(date '+%d/%m/%Y às %H:%M:%S %Z')
+DEPLOY_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S %Z')
 
 # Commit message (try to get from git, fallback to "N/A")
 COMMIT_MESSAGE=$(git log -1 --format=%s 2>/dev/null || echo "Deploy via GitHub Actions")
@@ -90,7 +90,7 @@ if [ -n "$SLACK_WEBHOOK" ]; then
   fi
 
   curl -X POST "$SLACK_WEBHOOK" \
-    -H 'Content-Type: application/json' \
+    -H 'Content-Type: application/json; charset=utf-8' \
     -d "{
       \"text\": \"${EMOJI} *${STATUS_TEXT} - ${PROJECT_NAME}*\",
       \"blocks\": [
