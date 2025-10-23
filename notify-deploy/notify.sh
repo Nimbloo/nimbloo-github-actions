@@ -113,8 +113,8 @@ if [ -n "$SLACK_WEBHOOK" ]; then
               \"text\": \"*Region:* \\\`${AWS_REGION}\\\`\"
             }
           ]
-        }${CUSTOM_FIELD},
-        {
+        }${CUSTOM_FIELD}
+        ,{
           ${ACTIONS}
         }
       ]
