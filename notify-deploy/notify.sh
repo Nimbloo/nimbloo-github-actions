@@ -187,6 +187,25 @@ fi
 if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   echo "📧 Sending Email notification..."
 
+  # Validate AWS credentials are available
+  AWS_AVAILABLE=false
+  if ! command -v aws &> /dev/null; then
+    echo "❌ AWS CLI not found - email notification skipped"
+    echo "   GitHub Actions should have AWS CLI pre-installed"
+  elif ! aws sts get-caller-identity --region ${AWS_REGION} &> /dev/null 2>&1; then
+    echo "❌ AWS credentials not configured - email notification skipped"
+    echo "   💡 Add 'Configure AWS Credentials' step BEFORE this action:"
+    echo "      - uses: aws-actions/configure-aws-credentials@v4"
+    echo "        with:"
+    echo "          aws-region: ${AWS_REGION}"
+    echo "          role-to-assume: arn:aws:iam::ACCOUNT_ID:role/ROLE_NAME"
+  else
+    echo "✅ AWS credentials validated"
+    AWS_AVAILABLE=true
+  fi
+
+  if [ "$AWS_AVAILABLE" = true ]; then
+
   # Determine subject and emoji
   case "$STATUS" in
     "started")
@@ -598,6 +617,7 @@ HTMLEOF
     --region ${AWS_REGION} && echo "✅ Email notification sent" || echo "⚠️ Failed to send email notification (ignored)"
 
   rm -f /tmp/email.json
+  fi
 fi
 
 echo "✅ Notification process completed"
