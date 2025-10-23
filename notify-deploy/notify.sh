@@ -292,7 +292,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
           <!-- Header with orange gradient (em andamento) -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_ORANGE_PLACEHOLDER 0%, #e04a1e 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 🚀 Deploy Iniciado!
               </h1>
@@ -361,7 +361,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Capt. Tommy
+                Shipped with ❤️ by 👨‍✈️🐕 Capt. Tommy
               </p>
             </td>
           </tr>
@@ -389,7 +389,7 @@ HTMLEOF
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_PURPLE_PLACEHOLDER 0%, NIMBLOO_DEEP_PURPLE_PLACEHOLDER 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 EMOJI_PLACEHOLDER Deploy Concluído!
               </h1>
@@ -485,7 +485,7 @@ HTMLEOF
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Capt. Tommy
+                Shipped with ❤️ by 👨‍✈️🐕 Capt. Tommy
               </p>
             </td>
           </tr>
@@ -513,7 +513,7 @@ HTMLEOF
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px; filter: grayscale(30%);">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px; filter: grayscale(30%);">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 ❌ Deploy Falhou
               </h1>
@@ -595,7 +595,7 @@ HTMLEOF
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Capt. Tommy
+                Shipped with ❤️ by 👨‍✈️🐕 Capt. Tommy
               </p>
             </td>
           </tr>
