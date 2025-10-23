@@ -4,7 +4,7 @@ Notificações automáticas de deploy via Slack e Email (AWS SES) com branding N
 
 ## ✨ Recursos
 
-- 🎨 **Branding Nimbloo**: cores corporativas (#642878, #502364, #F05A28) e mascote Mr. Shipper
+- 🎨 **Branding Nimbloo**: cores corporativas (#642878, #502364, #F05A28) e mascote Capt. Tommy
 - 📧 **Email HTML**: template profissional com gradiente e informações detalhadas
 - 💬 **Slack**: notificações formatadas com blocos e botões
 - ⏰ **Contexto completo**: timestamp, duração do deploy, mensagem do commit
@@ -194,7 +194,7 @@ Todos opcionais (auto-detecta se não passar):
 - Adicione o step que salva o timestamp no início do job
 - Passe o parâmetro `started_at` para a action
 
-**Mr. Shipper não aparece no email:**
+**Capt. Tommy não aparece no email:**
 - Certifique-se que está usando a versão @master mais recente
 - A imagem é hospedada no GitHub: deve aparecer automaticamente
 
@@ -323,7 +323,7 @@ PRD → Roxo Escuro #502364 (Nimbloo Deep Purple)
 
 #### 📧 Email
 - **Template**: HTML inline com CSS (sem arquivos externos)
-- **Imagens**: Mr. Shipper hospedado no GitHub (URL pública, não base64)
+- **Imagens**: Capt. Tommy hospedado no GitHub (URL pública, não base64)
 - **Cores Nimbloo**:
   - Roxo: `#642878`
   - Roxo Escuro: `#502364`

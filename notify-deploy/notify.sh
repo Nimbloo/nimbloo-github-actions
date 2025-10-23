@@ -242,8 +242,8 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
   COMMIT_URL="https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
   LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"  
-  # Mr. Shipper image (hosted on GitHub)
-  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/mr.shipper.png"
+  # Capt. Tommy image (hosted on GitHub)
+  MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/capt.tommy.png"
 
 
   # Build HTML email
@@ -263,12 +263,12 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
           <!-- Header with orange gradient (em andamento) -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_ORANGE_PLACEHOLDER 0%, #e04a1e 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 🚀 Deploy Iniciado!
               </h1>
               <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                Mr. Shipper está preparando o ship...
+                Capt. Tommy está preparando o ship...
               </p>
             </td>
           </tr>
@@ -332,7 +332,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Mr. Shipper
+                Shipped with ❤️ by Capt. Tommy
               </p>
             </td>
           </tr>
@@ -360,12 +360,12 @@ HTMLEOF
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_PURPLE_PLACEHOLDER 0%, NIMBLOO_DEEP_PURPLE_PLACEHOLDER 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 EMOJI_PLACEHOLDER Deploy Concluído!
               </h1>
               <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                Mr. Shipper fez o ship com sucesso!
+                Capt. Tommy fez o ship com sucesso!
               </p>
             </td>
           </tr>
@@ -456,7 +456,7 @@ HTMLEOF
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Mr. Shipper
+                Shipped with ❤️ by Capt. Tommy
               </p>
             </td>
           </tr>
@@ -484,7 +484,7 @@ HTMLEOF
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 30px 40px; text-align: center;">
-              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Mr. Shipper" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px; filter: grayscale(30%);">
+              <img src="MR_SHIPPER_URL_PLACEHOLDER" alt="Capt. Tommy" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ffffff; margin-bottom: 15px; filter: grayscale(30%);">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
                 ❌ Deploy Falhou
               </h1>
@@ -566,7 +566,7 @@ HTMLEOF
                 <strong style="color: NIMBLOO_PURPLE_PLACEHOLDER;">Nimbloo Platform</strong> · Deploy Automation
               </p>
               <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
-                Shipped with ❤️ by Mr. Shipper
+                Shipped with ❤️ by Capt. Tommy
               </p>
             </td>
           </tr>
