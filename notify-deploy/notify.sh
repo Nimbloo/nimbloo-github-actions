@@ -587,7 +587,7 @@ HTMLEOF
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding-top: 20px;">
+                  <td style="padding-top: 20px;" align="center">
                     <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
                       🔍 Ver Logs de Erro
                     </a>
