@@ -244,6 +244,12 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   LOGS_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
   # Capt. Tommy image - Select based on status and stage
+  # Trim whitespace from variables
+  STATUS=$(echo "$STATUS" | xargs)
+  STAGE=$(echo "$STAGE" | xargs)
+
+  echo "🖼️  Selecting Tommy image - STATUS='$STATUS' STAGE='$STAGE'"
+
   case "$STATUS" in
     "started")
       TOMMY_IMAGE="tommy_progress.png"
@@ -272,6 +278,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
       ;;
   esac
 
+  echo "✅ Selected image: $TOMMY_IMAGE"
   MR_SHIPPER_URL="https://raw.githubusercontent.com/Nimbloo/nimbloo-github-actions/master/notify-deploy/${TOMMY_IMAGE}"
 
 
