@@ -291,11 +291,11 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #fffbf7; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 137 137' width='120' height='120'%3E%3Cpath fill='%23F05A28' fill-opacity='0.15' d='M6.67,137A6.67,6.67,0,0,1,2,125.65L48.39,79.22a6.65,6.65,0,0,1,4.71-2h0a6.68,6.68,0,0,1,4.72,2A38.56,38.56,0,1,0,46.63,49L64.37,31.25A6.66,6.66,0,0,1,75.75,36V51.85L96.64,31a6.66,6.66,0,0,1,9.42,9.42L73.8,72.65a6.66,6.66,0,0,1-11.38-4.71V52.05L46.1,68.37a6.66,6.66,0,0,1-11.15-3A51.88,51.88,0,1,1,53.4,93.06l-42,42A6.65,6.65,0,0,1,6.67,137Z'/%3E%3C/svg%3E&quot;); background-repeat: repeat; background-size: 120px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: transparent; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(240, 90, 40, 0.15); overflow: hidden;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; box-shadow: 0 10px 25px rgba(240, 90, 40, 0.15); overflow: hidden; border: 2px solid #e5e7eb;">
           <!-- Header with orange gradient (em andamento) -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_ORANGE_PLACEHOLDER 0%, #e04a1e 100%); padding: 30px 40px; text-align: center;">
@@ -313,25 +313,25 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding-bottom: 25px;" align="center">
-                    <div style="background-color: NIMBLOO_ORANGE_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
+                    <div style="background-color: NIMBLOO_ORANGE_PLACEHOLDER; padding: 6px 16px; display: inline-block;">
                       <span style="color: #ffffff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">STAGE_PLACEHOLDER</span>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb;">
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Triggered by</td>
@@ -346,7 +346,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                 </tr>
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <div style="background-color: #fff7ed; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_ORANGE_PLACEHOLDER;">
+                    <div style="background-color: #fff7ed; padding: 16px; border-left: 3px solid NIMBLOO_ORANGE_PLACEHOLDER;">
                       <p style="margin: 0; color: NIMBLOO_ORANGE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
                       <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
                     </div>
@@ -354,7 +354,7 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
                 </tr>
                 <tr>
                   <td style="padding-top: 10px;" align="center">
-                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 14px;">
                       📋 Acompanhar Deploy
                     </a>
                   </td>
@@ -388,11 +388,11 @@ HTMLEOF
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #fdfaff; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 137 137' width='120' height='120'%3E%3Cpath fill='%23642878' fill-opacity='0.15' d='M6.67,137A6.67,6.67,0,0,1,2,125.65L48.39,79.22a6.65,6.65,0,0,1,4.71-2h0a6.68,6.68,0,0,1,4.72,2A38.56,38.56,0,1,0,46.63,49L64.37,31.25A6.66,6.66,0,0,1,75.75,36V51.85L96.64,31a6.66,6.66,0,0,1,9.42,9.42L73.8,72.65a6.66,6.66,0,0,1-11.38-4.71V52.05L46.1,68.37a6.66,6.66,0,0,1-11.15-3A51.88,51.88,0,1,1,53.4,93.06l-42,42A6.65,6.65,0,0,1,6.67,137Z'/%3E%3C/svg%3E&quot;); background-repeat: repeat; background-size: 120px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: transparent; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(100, 40, 120, 0.15); overflow: hidden;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; box-shadow: 0 10px 25px rgba(100, 40, 120, 0.15); overflow: hidden; border: 2px solid #e5e7eb;">
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, NIMBLOO_PURPLE_PLACEHOLDER 0%, NIMBLOO_DEEP_PURPLE_PLACEHOLDER 100%); padding: 30px 40px; text-align: center;">
@@ -410,33 +410,33 @@ HTMLEOF
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding-bottom: 25px;" align="center">
-                    <div style="background-color: BADGE_COLOR_PLACEHOLDER; padding: 6px 16px; border-radius: 20px; display: inline-block;">
+                    <div style="background-color: BADGE_COLOR_PLACEHOLDER; padding: 6px 16px; display: inline-block;">
                       <span style="color: #ffffff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">STAGE_PLACEHOLDER</span>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb;">
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Stack</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STACK_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">STACK_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Region</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">AWS_REGION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">AWS_REGION_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Deployed by</td>
@@ -452,14 +452,14 @@ HTMLEOF
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Duration</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
                       </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <div style="background-color: #f0f9ff; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
+                    <div style="background-color: #f0f9ff; padding: 16px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
                       <p style="margin: 0; color: NIMBLOO_PURPLE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
                       <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
                     </div>
@@ -470,12 +470,12 @@ HTMLEOF
                     <table cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding: 0 8px;">
-                          <a href="DASHBOARD_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                          <a href="DASHBOARD_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 14px;">
                             📊 Dashboard
                           </a>
                         </td>
                         <td style="padding: 0 8px;">
-                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                          <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_PURPLE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 14px;">
                             📋 Logs
                           </a>
                         </td>
@@ -512,11 +512,11 @@ HTMLEOF
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #fffbfb; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 137 137' width='120' height='120'%3E%3Cpath fill='%23dc2626' fill-opacity='0.15' d='M6.67,137A6.67,6.67,0,0,1,2,125.65L48.39,79.22a6.65,6.65,0,0,1,4.71-2h0a6.68,6.68,0,0,1,4.72,2A38.56,38.56,0,1,0,46.63,49L64.37,31.25A6.66,6.66,0,0,1,75.75,36V51.85L96.64,31a6.66,6.66,0,0,1,9.42,9.42L73.8,72.65a6.66,6.66,0,0,1-11.38-4.71V52.05L46.1,68.37a6.66,6.66,0,0,1-11.15-3A51.88,51.88,0,1,1,53.4,93.06l-42,42A6.65,6.65,0,0,1,6.67,137Z'/%3E%3C/svg%3E&quot;); background-repeat: repeat; background-size: 120px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: transparent; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15); overflow: hidden;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15); overflow: hidden; border: 2px solid #e5e7eb;">
           <!-- Header with gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 30px 40px; text-align: center;">
@@ -534,7 +534,7 @@ HTMLEOF
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding-bottom: 20px;">
-                    <div style="background-color: #fef2f2; padding: 16px; border-radius: 6px; border-left: 3px solid #ef4444;">
+                    <div style="background-color: #fef2f2; padding: 16px; border-left: 3px solid #ef4444;">
                       <p style="margin: 0; color: #991b1b; font-weight: 600;">⚠️ Ação Necessária</p>
                       <p style="margin: 8px 0 0 0; color: #dc2626; font-size: 14px;">O deploy falhou. Verifique os logs para detalhes do erro.</p>
                     </div>
@@ -542,22 +542,22 @@ HTMLEOF
                 </tr>
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb; border-radius: 6px;">
+                    <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e5e7eb;">
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; width: 140px; border-right: 1px solid #e5e7eb;">Project</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">PROJECT_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Environment</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">STAGE_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">STAGE_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Version</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">VERSION_PLACEHOLDER</code></td>
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Branch</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">GITHUB_REF_NAME_PLACEHOLDER</code></td>
                       </tr>
                       <tr style="background-color: #f9fafb;">
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Triggered by</td>
@@ -573,14 +573,14 @@ HTMLEOF
                       </tr>
                       <tr>
                         <td style="font-weight: 600; color: NIMBLOO_PURPLE_PLACEHOLDER; border-right: 1px solid #e5e7eb;">Duration</td>
-                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
+                        <td style="color: #6b7280;"><code style="background-color: #f3f4f6; padding: 2px 6px; font-size: 13px;">DEPLOY_DURATION_PLACEHOLDER</code></td>
                       </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom: 20px;">
-                    <div style="background-color: #f0f9ff; padding: 16px; border-radius: 6px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
+                    <div style="background-color: #f0f9ff; padding: 16px; border-left: 3px solid NIMBLOO_PURPLE_PLACEHOLDER;">
                       <p style="margin: 0; color: NIMBLOO_PURPLE_PLACEHOLDER; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">💬 Commit Message</p>
                       <p style="margin: 8px 0 0 0; color: #374151; font-size: 14px; line-height: 1.5;">COMMIT_MESSAGE_PLACEHOLDER</p>
                     </div>
@@ -588,7 +588,7 @@ HTMLEOF
                 </tr>
                 <tr>
                   <td style="padding-top: 20px;" align="center">
-                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: NIMBLOO_ORANGE_PLACEHOLDER; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                    <a href="LOGS_URL_PLACEHOLDER" style="display: inline-block; background-color: #dc2626; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 14px;">
                       🔍 Ver Logs de Erro
                     </a>
                   </td>
