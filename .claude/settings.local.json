@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: adiciona imagens específicas do Capt. Tommy por status e ambiente\n\n- Adiciona tommy_progress.png para deploy iniciado\n- Adiciona tommy_success_dev.png para sucesso em dev\n- Adiciona tommy_success_staging.png para sucesso em hml\n- Adiciona tommy_success_prod.png para sucesso em prd\n- Adiciona tommy_fail.png para deploy com falha\n- Implementa lógica de seleção de imagem baseada em STATUS e STAGE\n- Imagens são carregadas via GitHub raw URL no email\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: adiciona documentação de arquitetura\n\n- Descreve estrutura da composite action notify-deploy\n- Documenta lógica de auto-detecção de variáveis\n- Inclui diretrizes de branding Nimbloo\n- Detalha implementação técnica de Slack e Email\n- Adiciona guia para desenvolvimento e modificações\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\nstyle: ajusta tamanho e proporção das imagens do Capt. Tommy\n\n- Aumenta tamanho da imagem de 80px para 130px nos emails\n- Ajusta proporção de tommy_progress.png e tommy_fail.png para 1024x1024\n- Adiciona emojis 👨‍✈️🐕 no rodapé dos emails\n- Inclui arquivos HTML de preview para visualização local\nEOF\n)\")",
+      "WebFetch(domain:github.com)",
+      "Read(//c/Projetos/**)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
