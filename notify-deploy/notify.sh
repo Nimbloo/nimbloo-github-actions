@@ -230,12 +230,24 @@ if [ -n "$NOTIFICATION_EMAIL" ] && [ -n "$NOTIFICATION_EMAIL_FROM" ]; then
       ;;
   esac
 
-  # Determine badge color based on stage
-  case "${STAGE}" in
-    "dev") BADGE_COLOR="$NIMBLOO_PURPLE" ;;
-    "hml") BADGE_COLOR="$NIMBLOO_ORANGE" ;;
-    "prd") BADGE_COLOR="$NIMBLOO_DEEP_PURPLE" ;;
-    *) BADGE_COLOR="#6b7280" ;;
+  # Determine badge color based on status (to match email theme)
+  case "$STATUS" in
+    "started")
+      BADGE_COLOR="$NIMBLOO_ORANGE"
+      ;;
+    "success")
+      # Success emails use purple theme - badge color varies by stage for visual distinction
+      case "${STAGE}" in
+        "prd") BADGE_COLOR="$NIMBLOO_DEEP_PURPLE" ;;
+        *) BADGE_COLOR="$NIMBLOO_PURPLE" ;;
+      esac
+      ;;
+    "failed")
+      BADGE_COLOR="#6b7280"  # Gray for failed
+      ;;
+    *)
+      BADGE_COLOR="#6b7280"
+      ;;
   esac
 
   # URLs
