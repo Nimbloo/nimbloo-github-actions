@@ -75,18 +75,25 @@ SLACKJSON
       ;;
 
     "success")
+      # Select emoji based on stage
+      if [ "$STAGE" == "prd" ]; then
+        SLACK_EMOJI="🎉"
+      else
+        SLACK_EMOJI="✅"
+      fi
+
       DASHBOARD_URL="https://console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#dashboards:name=${STACK_NAME}"
       LAMBDA_URL="https://console.aws.amazon.com/lambda/home?region=${AWS_REGION}#/functions/${STACK_NAME}"
 
       cat > /tmp/slack-payload.json <<SLACKJSON
 {
-  "text": "✅ *Deploy Concluído com Sucesso - ${PROJECT_NAME}*",
+  "text": "${SLACK_EMOJI} *Deploy Concluído com Sucesso - ${PROJECT_NAME}*",
   "blocks": [
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "✅ *Deploy Concluído com Sucesso*\n*Environment:* \`${STAGE}\`\n*Version:* \`${VERSION}\`\n*Branch:* \`${GITHUB_REF_NAME}\`\n*Actor:* ${GITHUB_ACTOR}\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Message:* ${COMMIT_MESSAGE_ESCAPED}\n*Duration:* ${DEPLOY_DURATION}"
+        "text": "${SLACK_EMOJI} *Deploy Concluído com Sucesso*\n*Environment:* \`${STAGE}\`\n*Version:* \`${VERSION}\`\n*Branch:* \`${GITHUB_REF_NAME}\`\n*Actor:* ${GITHUB_ACTOR}\n*Commit:* <https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${COMMIT_SHORT}>\n*Message:* ${COMMIT_MESSAGE_ESCAPED}\n*Duration:* ${DEPLOY_DURATION}"
       }
     },
     {
